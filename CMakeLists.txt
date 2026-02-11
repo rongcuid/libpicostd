@@ -5,6 +5,33 @@ project(picostd VERSION 0.1.0 LANGUAGES C)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
+# Dependencies
+# Prefer the CMake package config that ships with hwloc (lowercase name).
+find_package(hwloc QUIET CONFIG)
+
+if(TARGET hwloc::hwloc)
+    set(PICOSTD_HWLOC_TARGET hwloc::hwloc)
+elseif(TARGET Hwloc::Hwloc)
+    set(PICOSTD_HWLOC_TARGET Hwloc::Hwloc)
+elseif(TARGET HWLOC::hwloc)
+    set(PICOSTD_HWLOC_TARGET HWLOC::hwloc)
+endif()
+
+# Fallback: pkg-config (covers distros that don't ship CMake config files).
+if(NOT DEFINED PICOSTD_HWLOC_TARGET)
+    find_package(PkgConfig QUIET)
+    if(PkgConfig_FOUND)
+        pkg_check_modules(HWLOC REQUIRED IMPORTED_TARGET hwloc)
+        if(TARGET PkgConfig::HWLOC)
+            set(PICOSTD_HWLOC_TARGET PkgConfig::HWLOC)
+        endif()
+    endif()
+endif()
+
+if(NOT DEFINED PICOSTD_HWLOC_TARGET)
+    message(FATAL_ERROR "Could not find hwloc. Install the hwloc development package (providing hwlocConfig.cmake or pkg-config 'hwloc').")
+endif()
+
 # Let callers choose static or shared builds via standard BUILD_SHARED_LIBS.
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
@@ -45,6 +72,11 @@ target_include_directories(picostd
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/picostd>
+)
+
+target_link_libraries(picostd
+    PUBLIC
+        ${PICOSTD_HWLOC_TARGET}
 )
 
 # Installation
@@ -96,4 +128,3 @@ if(PICOSTD_ENABLE_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
-

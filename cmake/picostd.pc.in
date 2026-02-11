@@ -6,5 +6,5 @@ includedir=@CMAKE_INSTALL_INCLUDEDIR@/picostd
 Name: picostd
 Description: Portable utilities from the picostd project
 Version: @PROJECT_VERSION@
-Libs: -L${libdir} -lpicostd
+Libs: -L${libdir} -lpicostd -lhwloc
 Cflags: -I${includedir}
