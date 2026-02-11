@@ -18,32 +18,32 @@ typedef struct {
   char flag;
   pico_args_kind_t kind;
   /// Writes true if flag is encountered. If nullptr, no-op.
-  bool *on;
+  bool* on;
   /// Pointer to write the parsed value. If nullptr, no-op.
   union {
-    void *value_raw;
-    int32_t *value_i32;
-    int64_t *value_i64;
-    const char **value_str;
+    void* value_raw;
+    int32_t* value_i32;
+    int64_t* value_i64;
+    const char** value_str;
   };
   /// Optional name of the argument.
-  const char *name;
+  const char* name;
   /// Optional help message.
-  const char *help;
+  const char* help;
 } pico_args_switch_t;
 
 typedef struct {
   size_t n_switches;
-  pico_args_switch_t *switches;
+  pico_args_switch_t* switches;
   /// Writes the last index of parsed options. If nullptr, no-op.
-  int *option_index;
+  int* option_index;
   /// Optional description.
-  const char *description;
+  const char* description;
 } pico_args_t;
 
 /** @brief Parses argument list. Returns error number.*/
-pico_err_t pico_args_parse(const pico_args_t *args, int argc, char **argv,
-                           arena_t scratch);
+pico_err_t pico_args_parse(const pico_args_t* args, int argc, char** argv,
+                           pico_arena_t scratch);
 
 /** @brief Prints usage to stderr.*/
-void pico_args_print_usage(FILE *file, const pico_args_t *args, char *prog);
+void pico_args_print_usage(FILE* file, const pico_args_t* args, char* prog);
