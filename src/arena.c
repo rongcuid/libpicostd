@@ -7,6 +7,33 @@
 
 #include "alloc.h"
 
+static void* arena_alloc_vt_malloc(void* ctx, size_t size, size_t align) {
+  return arena_malloc((pico_arena_t*)ctx, size, align);
+}
+
+static void arena_alloc_vt_free(void* ctx, void* ptr, size_t size,
+                                size_t align) {
+  arena_free((pico_arena_t*)ctx, ptr, size, align);
+}
+
+static void* arena_alloc_vt_realloc(void* ctx, void* ptr, size_t old_size,
+                                    size_t new_size, size_t align) {
+  return arena_realloc((pico_arena_t*)ctx, ptr, old_size, new_size, align);
+}
+
+static const pico_alloc_vt arena_alloc_vt = {
+    .malloc = arena_alloc_vt_malloc,
+    .free = arena_alloc_vt_free,
+    .realloc = arena_alloc_vt_realloc,
+};
+
+pico_alloc_t arena_allocator(pico_arena_t* a) {
+  return (pico_alloc_t){
+      .vt = &arena_alloc_vt,
+      .context = a,
+  };
+}
+
 pico_arena_t arena_from_buf(void* buf, size_t capacity) {
   pico_arena_t a = {0};
   a.begin = buf;
@@ -17,15 +44,6 @@ pico_arena_t arena_from_buf(void* buf, size_t capacity) {
 pico_arena_t arena_suballoc(pico_arena_t* a, size_t capacity) {
   pico_arena_t b = {0};
   return arena_from_buf(arena_malloc(a, capacity, 1), capacity);
-}
-
-pico_alloc_t arena_allocator(pico_arena_t* a) {
-  return (pico_alloc_t){
-      .context = a,
-      .malloc = (void*)arena_malloc,
-      .free = (void*)arena_free,
-      .realloc = (void*)arena_realloc,
-  };
 }
 
 /**
