@@ -15,6 +15,7 @@ typedef enum {
 } pico_args_kind_t;
 
 typedef struct {
+  /// A single-character option flag
   char flag;
   pico_args_kind_t kind;
   /// Writes true if flag is encountered. If nullptr, no-op.
@@ -35,8 +36,8 @@ typedef struct {
 typedef struct {
   size_t n_switches;
   pico_args_switch_t* switches;
-  /// Writes the last index of parsed options. If nullptr, no-op.
-  int* option_index;
+  /// Optionally write the index after the last parsed options.
+  int* last_optind;
   /// Optional description.
   const char* description;
 } pico_args_t;
@@ -45,5 +46,5 @@ typedef struct {
 pico_err_t pico_args_parse(const pico_args_t* args, int argc, char** argv,
                            pico_arena_t scratch);
 
-/** @brief Prints usage to stderr.*/
+/** @brief Prints usage to file.*/
 void pico_args_print_usage(FILE* file, const pico_args_t* args, char* prog);
