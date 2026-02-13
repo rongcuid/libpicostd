@@ -37,6 +37,7 @@ option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 set(PICOSTD_SOURCES
     src/picostd.c
+    src/alloc.c
     src/arena.c
     src/args.c
     src/conversion.c

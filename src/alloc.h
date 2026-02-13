@@ -16,6 +16,9 @@ struct pico_alloc_t {
   void* context;
 };
 
+/** The C stdlib memory allocator.*/
+pico_alloc_t pico_cstdlib_allocator(void);
+
 static inline void* pico_malloc(pico_alloc_t self, size_t size, size_t align) {
   return self.vt->malloc(self.context, size, align);
 }
