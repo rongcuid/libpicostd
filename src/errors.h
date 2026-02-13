@@ -7,6 +7,7 @@ typedef enum {
   PICO_OK = 0,
   PICO_ERR = 1,
   PICO_NOMEM = 2,
+  PICO_BADARGS = 3,
 } pico_err_t;
 
 #define pt_expect(x, fail_msg) \
