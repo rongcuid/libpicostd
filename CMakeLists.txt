@@ -36,6 +36,7 @@ endif()
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 set(PICOSTD_SOURCES
+    src/errors.c
     src/picostd.c
     src/alloc.c
     src/arena.c

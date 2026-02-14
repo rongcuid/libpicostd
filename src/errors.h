@@ -1,18 +1,23 @@
 #pragma once
 
-#include <stdlib.h>
-
 /** @brief Main error type for pico std. All fallable functions return this.*/
 typedef enum {
+  /// Success is always 0
   PICO_OK = 0,
-  PICO_ERR = 1,
-  PICO_NOMEM = 2,
-  PICO_BADARGS = 3,
-  PICO_TODO = 4,
+  /// Generic error
+  PICO_ERR,
+  /// Internal error
+  PICO_BUG,
+  /// Not implemented error
+  PICO_TODO,
+  /// User error, invalid argument
+  PICO_BADARGS,
+  /// Memory allocation fail
+  PICO_NOMEM,
+  /// Device (anything not the host CPU) generic error
+  PICO_DEV_ERR,
+  /// Device (anything not the host CPU) memory allocation error
+  PICO_DEV_NOMEM,
 } pico_err_t;
 
-#define pt_expect(x, fail_msg) \
-  if ((errno = (x))) {         \
-    perror(fail_msg);          \
-    exit(EXIT_FAILURE);        \
-  }
+const char *pico_err_str(pico_err_t err);
